@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generadores de Números Aleatorios</title>
+    <!-- Importar Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4">Generadores de Números Aleatorios</h1>
+
+        <!-- Congruencial Mixto -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2">Congruencial Mixto</h2>
+            <p class="mb-2">Ingresa la semilla y la cantidad de números aleatorios que deseas generar:</p>
+            <form action="http://localhost:8000/congruencial-mixto" method="post">
+                <div class="flex mb-4">
+                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla">
+                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Congruencial Multiplicativo -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2">Congruencial Multiplicativo</h2>
+            <p class="mb-2">Ingresa la semilla y la cantidad de números aleatorios que deseas generar:</p>
+            <form action="http://localhost:8000/congruencial-multiplicativo" method="post">
+                <div class="flex mb-4">
+                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla">
+                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Cuadrados Medios -->
+        <div>
+            <h2 class="text-2xl font-bold mb-2">Cuadrados Medios</h2>
+            <p class="mb-2">Ingresa la semilla y la cantidad de números aleatorios que deseas generar:</p>
+            <form action="http://localhost:8000/cuadrados-medios" method="post">
+                <div class="flex mb-4">
+                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla">
+                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
