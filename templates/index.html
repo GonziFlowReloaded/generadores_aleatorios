@@ -17,8 +17,10 @@
             <p class="mb-2">Ingresa la semilla y la cantidad de números aleatorios que deseas generar:</p>
             <form action="https://generadores-aleatorios.vercel.app/congruencial-mixto" method="post">
                 <div class="flex mb-4">
-                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla">
-                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad">
+                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" required>
+
+                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar</button>
                 </div>
             </form>
@@ -30,8 +32,10 @@
             <p class="mb-2">Ingresa la semilla y la cantidad de números aleatorios que deseas generar:</p>
             <form action="https://generadores-aleatorios.vercel.app/congruencial-multiplicativo" method="post">
                 <div class="flex mb-4">
-                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla">
-                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad">
+                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" required>
+
+                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar</button>
                 </div>
             </form>
@@ -43,12 +47,28 @@
             <p class="mb-2">Ingresa la semilla y la cantidad de números aleatorios que deseas generar:</p>
             <form action="https://generadores-aleatorios.vercel.app/cuadrados-medios" method="post">
                 <div class="flex mb-4">
-                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla">
-                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad">
+                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" required>
+
+                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar</button>
                 </div>
             </form>
         </div>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold mb-2">Intervalos con decimal</h2>
+            {% if error %}<p class="text-red-500 mb-2">{{ error }}</p>{% endif %}
+            <p class="mb-2">Ingresa la cantidad de números aleatorios que deseas generar, el intervalo y la semilla:</p>
+            <form action="https://generadores-aleatorios.vercel.app/random-decimal" method="post">
+                <div class="flex mb-4">
+                    <input type="text" name="seed" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Semilla" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" required>
+                    <input type="number" name="quantity" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Cantidad" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    <input type="text" name="interval" class="border-gray-300 border-2 rounded-md px-4 py-2 mr-2" placeholder="Intervalo (a, b)" required>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generar</button>
+                </div>
+            </form>
+        </div>
+        
     </div>
 </body>
 </html>

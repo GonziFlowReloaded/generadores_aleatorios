@@ -14,6 +14,10 @@
 
         <p class="mb-4">Semilla: {{ seed }}</p>
         <p class="mb-4">Cantidad de números: {{ quantity }}</p>
+        {% if interval %}
+            <p class="mb-4">Intervalo: {{ interval }}</p>
+        {% endif %}
+
 
         <table class="table-auto mb-4">
             <thead>
