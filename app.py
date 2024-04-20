@@ -22,4 +22,4 @@ def read_root(request: Request):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app)
+    uvicorn.run("app:app", port=8000, reload=True)
