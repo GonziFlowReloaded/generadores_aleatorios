@@ -1,5 +1,27 @@
 import datetime
 
+import numpy as np
+import scipy
+
+def chi_squared_test(numbers: list, num_bins=10, alpha=0.05):
+    expected_frequency = len(numbers) / num_bins
+    
+    # Calcular el histograma de los números generados
+    observed_frequency, _ = np.histogram(numbers, bins=num_bins)
+    
+    # Calcular el estadístico de prueba (chi-cuadrado)
+    chi_squared_statistic = np.sum((observed_frequency - expected_frequency) ** 2 / expected_frequency)
+    
+    # Calcular el valor crítico de chi-cuadrado
+    critical_value = scipy.stats.chi2.ppf(1 - alpha, num_bins - 1)
+    
+    # Comparar el estadístico de prueba con el valor crítico
+    if chi_squared_statistic <= critical_value:
+        return True, chi_squared_statistic, critical_value
+    else:
+        return False, chi_squared_statistic, critical_value
+    
+
 def congruential_mixed(seed: int, a=16807, c=32, m=2147483647, iterations=100, quant_digits=123):
     results = []
     for _ in range(iterations):
@@ -48,12 +70,19 @@ Rangos de probabilidad de los incrementos diarios del nivel del lago:
 [660 - 887] 2
 [888- 999] 3
 """
-
+import datetime
 
 def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
 
     print(f'Simulación de la represa durante {dias} días')
     numeros_generados = congruential_mixed(seed = seed, quant_digits=dias*4)
+    validacion, _, _ = chi_squared_test(numeros_generados)
+    
+    while not validacion:
+        tiempo_actual_microsegundos = datetime.datetime.now().microsecond
+        numeros_generados = congruential_mixed(seed = tiempo_actual_microsegundos, quant_digits=dias*4)
+        validacion, _, _ = chi_squared_test(numeros_generados)
+
 
     nivel_maximo = 52
     nivel_minimo = 0
@@ -73,6 +102,13 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
         3: 0,
         4: 0
     }
+
+    compuertas_escurrimiento = {
+        1: 1,
+        2: 2,
+        3: 3,
+        4: 4
+    }
     
     probabilidades = {
         -3: [0, 36],
@@ -85,6 +121,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
     }
 
     contar_alerta_roja = 0
+    contar_riesgo_sequia = 0
 
     for i in range(dias):
         probabilidad_obtenida = ""
@@ -97,7 +134,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
         
         for key, value in probabilidades.items():
             if int(probabilidad_obtenida) >= value[0] and int(probabilidad_obtenida) <= value[1]:
-                nivel_actual += key
+                nivel_actual += float(key)
                 break
 
         if nivel_actual > nivel_maximo:
@@ -112,12 +149,18 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
             if nivel_actual > compuertas[compuerta]:
 
                 cantidad_de_veces_compuerta_abierta[compuerta] += 1
+                nivel_actual -= compuertas_escurrimiento[compuerta]
 
-                print(f'Compuerta {compuerta} abierta')
+
+                print(f'Compuerta {compuerta} abierta - Nivel del lago: {nivel_actual} m')
         
         if nivel_actual >= nivel_alerta_roja:
             print('Nivel de alerta roja')
             contar_alerta_roja += 1
+
+        if nivel_actual <= 2:
+            print('Riesgo de sequía')
+            contar_riesgo_sequia += 1
 
         if nivel_actual >= nivel_maximo:
             print('La represa ha colapsado')
@@ -133,5 +176,13 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
     print('Veces que se abrieron las compuertas:')
     for compuerta, veces in cantidad_de_veces_compuerta_abierta.items():
         print(f'Compuerta {compuerta}: {veces} veces')
+    
+    print(f'El nivel de peligro de sequía se activó {contar_riesgo_sequia} veces')
 
-simular_represa(dias=100, nivel_del_lago=23, seed=1233)
+
+print("Ingrese el número de días que desea simular: ")
+print("Ingrese el nivel del lago: ")
+print("Ingrese la semilla (Opcional): ")
+
+simular_represa(dias=3, nivel_del_lago=30, seed=1233)
+
