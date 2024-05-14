@@ -167,7 +167,7 @@ def simulador_global_electricity(cantidad_lotes):
     print("Cantidad de lotes rechazados: ", lotes["Aprobado"].value_counts()[False])
     print("Proporción de lotes aprobados: ", lotes["Aprobado"].value_counts(normalize=True)[True])
     print("Proporción de lotes rechazados: ", lotes["Aprobado"].value_counts(normalize=True)[False])
-    print("Porcentaje de placas no defectuosas promedio por lote")
+    print("Porcentaje de placas no defectuosas promedio por lote: ")
     print(lotes["Placas no defectuosas"].mean())
     print("Porcentaje de placas defectuosas promedio por lote")
     print(lotes["Placas defectuosas"].mean())

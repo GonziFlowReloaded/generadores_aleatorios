@@ -150,7 +150,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
         print(f'Día {i+1}: Nivel del lago: {nivel_actual} m')
 
         for compuerta in compuertas:
-            if nivel_actual > compuertas[compuerta]:
+            if nivel_actual >= compuertas[compuerta]:
 
                 cantidad_de_veces_compuerta_abierta[compuerta] += 1
                 nivel_actual -= compuertas_escurrimiento[compuerta]
@@ -202,5 +202,5 @@ print("Ingrese el número de días que desea simular: ")
 print("Ingrese el nivel del lago: ")
 print("Ingrese la semilla (Opcional): ")
 
-simular_represa(dias=30, nivel_del_lago=30, seed=1233)
+simular_represa(dias=100, nivel_del_lago=40, seed=1233)
 
