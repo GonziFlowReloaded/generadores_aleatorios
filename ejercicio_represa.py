@@ -1,40 +1,6 @@
 import datetime
-
-import numpy as np
-import scipy
-
-def chi_squared_test(numbers: list, num_bins=10, alpha=0.05):
-    expected_frequency = len(numbers) / num_bins
-    
-    # Calcular el histograma de los números generados
-    observed_frequency, _ = np.histogram(numbers, bins=num_bins)
-    
-    # Calcular el estadístico de prueba (chi-cuadrado)
-    chi_squared_statistic = np.sum((observed_frequency - expected_frequency) ** 2 / expected_frequency)
-    
-    # Calcular el valor crítico de chi-cuadrado
-    critical_value = scipy.stats.chi2.ppf(1 - alpha, num_bins - 1)
-    
-    # Comparar el estadístico de prueba con el valor crítico
-    if chi_squared_statistic <= critical_value:
-        return True, chi_squared_statistic, critical_value
-    else:
-        return False, chi_squared_statistic, critical_value
-    
-
-def congruential_mixed(seed: int, a=16807, c=32, m=2147483647, iterations=100, quant_digits=123):
-    results = []
-    for _ in range(iterations):
-        seed = (a * seed + c) % m
-        seed += datetime.datetime.now().microsecond
-  
-        for digit in str(seed):
-            results.append(int(digit))
-            if len(results) == quant_digits:
-                return results
-            
-
-    return results
+from funcs.chi_cuadrado import chi_squared_test
+from funcs.congruencial_mixto_alt import congruential_mixed
 
 """
 Nivel máximo de agua soportado por la represa: 45 m
@@ -202,5 +168,5 @@ print("Ingrese el número de días que desea simular: ")
 print("Ingrese el nivel del lago: ")
 print("Ingrese la semilla (Opcional): ")
 
-simular_represa(dias=100, nivel_del_lago=40, seed=1233)
+simular_represa(dias=120, nivel_del_lago=30, seed=3791)
 
