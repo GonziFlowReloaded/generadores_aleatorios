@@ -108,27 +108,63 @@ def simulador_lote(p, n, a, seed=12344):
         print(f"El lote ha sido aprobado")
         print(f"Placas defectuosas: {defectuosas}")
         print(f"Placas no defectuosas: {no_defectuosas}")
-        print(f"Proporción de placas defectuosas: {defectuosas/n}")
+        print(f"Proporción de placas defectuosas: {(defectuosas/n)*100}%")
         return True, defectuosas, no_defectuosas
     else:
         print(f"El lote ha sido rechazado")
         print(f"Placas defectuosas: {defectuosas}")
         print(f"Placas no defectuosas: {no_defectuosas}")
-        print(f"Proporción de placas defectuosas: {defectuosas/n}")
+        print(f"Proporción de placas defectuosas: {(defectuosas/n)*100}%")
         return False, defectuosas, no_defectuosas
 
 # global_electricity(p=0.23123123, n=100, a=20, seed=333)
 
-print("Ingresar los valores de p, n y a para la simulación de la fábrica de placas de video")
-p = float(input("Probabilidad de placa grafica defectuosa (En decimales): "))
-n = int(input("Tamaño de la muestra de control: "))
-a = int(input("Límite de aceptación (Del tamaño de la muestra actual): "))
+import pandas as pd
+import plotnine as p9
 
-simulador_lote(p=p, n=n, a=a, seed=333)
+
+# simulador_lote(p=p, n=n, a=a, seed=333)
 
 def simulador_global_electricity(cantidad_lotes):
     lotes = []
 
-    
+    print("Ingresar los valores de p, n y a para la simulación de la fábrica de placas de video")
+    p = float(input("Probabilidad de placa grafica defectuosa (En decimales): "))
+    n = int(input("Tamaño de la muestra de control: "))
+    a = int(input("Límite de aceptación (Del tamaño de la muestra actual): "))
 
     for i in range(cantidad_lotes):
+        lotes.append(simulador_lote(p=0.23, n=60, a=15, seed=333))
+
+    lotes = pd.DataFrame(lotes, columns=["Aprobado", "Placas defectuosas", "Placas no defectuosas"])
+    print(lotes)
+    print(lotes["Aprobado"].value_counts())
+    print(lotes["Aprobado"].value_counts(normalize=True))
+    print(lotes["Placas defectuosas"].mean())
+    print(lotes["Placas no defectuosas"].mean())
+
+    grafico_aprobacion = (
+        p9.ggplot(lotes) +
+        p9.aes(x="Aprobado") +
+        p9.geom_bar() +
+        p9.labs(title="Aprobación de lotes de placas de video", x="Aprobado", y="Cantidad de lotes") +
+        p9.theme_538()
+    )
+
+    grafico_defectuosas = (
+        p9.ggplot(lotes) +
+        p9.aes(x=lotes.index, y="Placas defectuosas") +
+        p9.geom_bar(stat="identity") +
+        p9.geom_point() +
+        p9.geom_line() +
+        p9.labs(title="Cantidad de placas defectuosas por lote", x="Lote", y="Cantidad de placas defectuosas") +
+        p9.theme_538()
+    )
+
+    print(grafico_aprobacion)
+    print(grafico_defectuosas)
+
+    
+simulador_global_electricity(10)
+
+# simulador_lote(p=0.23123123, n=100, a=20, seed=333)

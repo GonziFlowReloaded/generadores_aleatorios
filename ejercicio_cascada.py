@@ -71,6 +71,8 @@ Rangos de probabilidad de los incrementos diarios del nivel del lago:
 [888- 999] 3
 """
 import datetime
+import plotnine as p9
+import pandas as pd
 
 def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
 
@@ -88,6 +90,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
     nivel_minimo = 0
     nivel_actual = nivel_del_lago
     nivel_alerta_roja = 45
+    niveles_de_agua = []
 
     compuertas = {
         1: 15,
@@ -126,6 +129,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
     for i in range(dias):
         probabilidad_obtenida = ""
         
+        niveles_de_agua.append(nivel_actual)
         #Agarrar 3 digitos de la lista de numeros generados
         
         for _ in range(3):
@@ -179,10 +183,24 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
     
     print(f'El nivel de peligro de sequía se activó {contar_riesgo_sequia} veces')
 
+    df = pd.DataFrame({
+        'Día': list(range(1, dias+1)),
+        'Nivel del lago': niveles_de_agua
+    })
+
+    p = (p9.ggplot(df) +
+            p9.aes(x='Día', y='Nivel del lago') +
+            p9.geom_line() +
+            p9.geom_point() +
+            p9.labs(title='Nivel del lago por día', x='Día', y='Nivel del lago (m)'))
+    
+    print(p)
+    
+
 
 print("Ingrese el número de días que desea simular: ")
 print("Ingrese el nivel del lago: ")
 print("Ingrese la semilla (Opcional): ")
 
-simular_represa(dias=3, nivel_del_lago=30, seed=1233)
+simular_represa(dias=30, nivel_del_lago=30, seed=1233)
 
