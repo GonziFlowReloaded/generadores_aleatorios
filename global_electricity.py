@@ -134,7 +134,7 @@ def simulador_global_electricity(cantidad_lotes):
     a = int(input("Límite de aceptación (Del tamaño de la muestra actual): "))
 
     for i in range(cantidad_lotes):
-        lotes.append(simulador_lote(p=0.23, n=60, a=15, seed=333))
+        lotes.append(simulador_lote(p=p, n=n, a=a, seed=333))
 
     lotes = pd.DataFrame(lotes, columns=["Aprobado", "Placas defectuosas", "Placas no defectuosas"])
     print(lotes)
@@ -155,16 +155,28 @@ def simulador_global_electricity(cantidad_lotes):
         p9.ggplot(lotes) +
         p9.aes(x=lotes.index, y="Placas defectuosas") +
         p9.geom_bar(stat="identity") +
-        p9.geom_point() +
-        p9.geom_line() +
+        # p9.geom_point() +
+        p9.geom_smooth() +  # Añade esta línea para obtener una línea suavizada
         p9.labs(title="Cantidad de placas defectuosas por lote", x="Lote", y="Cantidad de placas defectuosas") +
         p9.theme_538()
     )
 
     print(grafico_aprobacion)
     print(grafico_defectuosas)
+    print("Cantidad de lotes aprobados: ", lotes["Aprobado"].value_counts()[True])
+    print("Cantidad de lotes rechazados: ", lotes["Aprobado"].value_counts()[False])
+    print("Proporción de lotes aprobados: ", lotes["Aprobado"].value_counts(normalize=True)[True])
+    print("Proporción de lotes rechazados: ", lotes["Aprobado"].value_counts(normalize=True)[False])
+    print("Porcentaje de placas no defectuosas promedio por lote")
+    print(lotes["Placas no defectuosas"].mean())
+    print("Porcentaje de placas defectuosas promedio por lote")
+    print(lotes["Placas defectuosas"].mean())
 
-    
-simulador_global_electricity(10)
+
+
+
+print("Simulador de fábrica de placas de video")
+cantidad_lotes = int(input("Ingrese la cantidad de lotes a simular: "))
+simulador_global_electricity(cantidad_lotes)
 
 # simulador_lote(p=0.23123123, n=100, a=20, seed=333)
