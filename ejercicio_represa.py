@@ -41,17 +41,24 @@ import plotnine as p9
 import pandas as pd
 
 def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
-
+    #Se crean los numeros aleatorios mediante congruencial mixto
     print(f'Simulación de la represa durante {dias} días')
-    numeros_generados = congruential_mixed(seed = seed, quant_digits=dias*4)
-    validacion, _, _ = chi_squared_test(numeros_generados)
+    numeros_generados = congruential_mixed(seed = seed, quant_digits=dias*3)
+    validacion, _, _ = chi_squared_test(numeros_generados, alpha=0.10)
     
+    max_validacion = 1000
+    #Se validan los numeros generados mediante chicuadrado
     while not validacion:
         tiempo_actual_microsegundos = datetime.datetime.now().microsecond
+        tiempo_actual_microsegundos += seed
         numeros_generados = congruential_mixed(seed = tiempo_actual_microsegundos, quant_digits=dias*4)
         validacion, _, _ = chi_squared_test(numeros_generados)
+        max_validacion -= 1
+        if max_validacion == 0:
+            print("No se pudo validar los números generados")
+            break
 
-
+    #Se declaran variables
     nivel_maximo = 52
     nivel_minimo = 0
     nivel_actual = nivel_del_lago
@@ -79,6 +86,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
         4: 4
     }
     
+    #Metodo de numeros indice
     probabilidades = {
         -3: [0, 36],
         -2: [37, 188],
@@ -92,21 +100,26 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
     contar_alerta_roja = 0
     contar_riesgo_sequia = 0
 
+    #Obtener ultimos 5 digitos de los numeros generados 
+    
+
+    #Inicia la simulación
     for i in range(dias):
         probabilidad_obtenida = ""
         
         niveles_de_agua.append(nivel_actual)
-        #Agarrar 3 digitos de la lista de numeros generados
+        
+        #Agarrar 3 digitos de la lista de numeros generados y eliminarlos para obtener nuestros numeros indice
         
         for _ in range(3):
             probabilidad_obtenida += str(numeros_generados.pop(0))
             
-        
+        #Se verifica en que rango cae nuestro numero generado "probabilidad_obtenida" y suma el nivel actual del agua
         for key, value in probabilidades.items():
             if int(probabilidad_obtenida) >= value[0] and int(probabilidad_obtenida) <= value[1]:
                 nivel_actual += float(key)
                 break
-
+            
         if nivel_actual > nivel_maximo:
             nivel_actual = nivel_maximo
 
@@ -115,6 +128,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
 
         print(f'Día {i+1}: Nivel del lago: {nivel_actual} m')
 
+        #Se contabilizan cuantas veces se abre cada compuerta y se escurre
         for compuerta in compuertas:
             if nivel_actual >= compuertas[compuerta]:
 
@@ -148,9 +162,13 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
         print(f'Compuerta {compuerta}: {veces} veces')
     
     print(f'El nivel de peligro de sequía se activó {contar_riesgo_sequia} veces')
-
+    
+    
+    #Grafikitos
+    print(len(niveles_de_agua))
+    print(len(list(range(1, dias+1))))
     df = pd.DataFrame({
-        'Día': list(range(1, dias+1)),
+        'Día': list(range(1, len(niveles_de_agua)+1)),
         'Nivel del lago': niveles_de_agua
     })
 
@@ -160,13 +178,15 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
             p9.geom_point() +
             p9.labs(title='Nivel del lago por día', x='Día', y='Nivel del lago (m)'))
     
-    print(p)
+    p.show()
     
 
 
-print("Ingrese el número de días que desea simular: ")
-print("Ingrese el nivel del lago: ")
-print("Ingrese la semilla (Opcional): ")
 
-simular_represa(dias=120, nivel_del_lago=30, seed=3791)
+dias = int(input("Ingrese el número de días que desea simular: "))
+
+nivel_del_lago = int(input("Ingrese el nivel del lago en metros: "))
+
+simular_represa(dias=dias, nivel_del_lago=nivel_del_lago, seed=12344)
+
 

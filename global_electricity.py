@@ -1,40 +1,5 @@
-import datetime
-
-import numpy as np
-import scipy
-
-def chi_squared_test(numbers: list, num_bins=10, alpha=0.05):
-    expected_frequency = len(numbers) / num_bins
-    
-    # Calcular el histograma de los números generados
-    observed_frequency, _ = np.histogram(numbers, bins=num_bins)
-    
-    # Calcular el estadístico de prueba (chi-cuadrado)
-    chi_squared_statistic = np.sum((observed_frequency - expected_frequency) ** 2 / expected_frequency)
-    
-    # Calcular el valor crítico de chi-cuadrado
-    critical_value = scipy.stats.chi2.ppf(1 - alpha, num_bins - 1)
-    
-    # Comparar el estadístico de prueba con el valor crítico
-    if chi_squared_statistic <= critical_value:
-        return True, chi_squared_statistic, critical_value
-    else:
-        return False, chi_squared_statistic, critical_value
-    
-
-def congruential_mixed(seed: int, a=16807, c=32, m=2147483647, iterations=100, quant_digits=123):
-    results = []
-    for _ in range(iterations):
-        seed = (a * seed + c) % m
-        seed += datetime.datetime.now().microsecond
-  
-        for digit in str(seed):
-            results.append(int(digit))
-            if len(results) == quant_digits:
-                return results
-            
-
-    return results
+from funcs.chi_cuadrado import chi_squared_test
+from funcs.congruencial_mixto_alt import congruential_mixed
 
 def get_numeros_indices(probabilidad):
     numero = str(probabilidad)
@@ -71,34 +36,34 @@ Se desea desarrollar un modelo de simulación que permita evaluar la efectividad
 
 def simulador_lote(p, n, a, seed=12344):
 
+    #En base a la probabilidad dada, se generan los numeros indices y se obtiene el maximo
     rangos_probabilidad, maximo = get_numeros_indices(p)
     
-    # print(rangos_probabilidad)
-    # print(maximo)
-
+    
+    #Se inicializan variables
     defectuosas = 0
     no_defectuosas = 0
 
+    #Generación de numeros aleatorios
     numeros_generados = congruential_mixed(seed = seed, quant_digits=n*len(str(maximo))*2)
     validacion, _, _ = chi_squared_test(numeros_generados)
 
+    #Bucle de validación
     while not validacion:
         seed = seed + 1
         numeros_generados = congruential_mixed(seed = seed, quant_digits=n*len(str(maximo))*2)
         validacion, _, _ = chi_squared_test(numeros_generados)
 
-
     #Funcionamiento de la simulación
-        
-    
     for i in range(n):
         numero = ""
+
+        #Generación de nuestra muestra artificial
         for _ in range(0, len(str(maximo))):
             numero += str(numeros_generados.pop(0))
         numero = int(numero)
             
-
-        # print(numero)
+        #Suma si es defectuosa o no defectuosa
         if numero >= rangos_probabilidad["defectuoso"][0] and numero <= rangos_probabilidad["defectuoso"][1]:
             defectuosas += 1
         else:
@@ -128,14 +93,17 @@ import plotnine as p9
 def simulador_global_electricity(cantidad_lotes):
     lotes = []
 
+    #Ingreso de datos
     print("Ingresar los valores de p, n y a para la simulación de la fábrica de placas de video")
     p = float(input("Probabilidad de placa grafica defectuosa (En decimales): "))
     n = int(input("Tamaño de la muestra de control: "))
     a = int(input("Límite de aceptación (Del tamaño de la muestra actual): "))
 
+    #Bucle de simulación
     for i in range(cantidad_lotes):
         lotes.append(simulador_lote(p=p, n=n, a=a, seed=333))
 
+    #Se convierte a dataframe
     lotes = pd.DataFrame(lotes, columns=["Aprobado", "Placas defectuosas", "Placas no defectuosas"])
     print(lotes)
     print(lotes["Aprobado"].value_counts())
@@ -143,6 +111,7 @@ def simulador_global_electricity(cantidad_lotes):
     print(lotes["Placas defectuosas"].mean())
     print(lotes["Placas no defectuosas"].mean())
 
+    #Gráficos
     grafico_aprobacion = (
         p9.ggplot(lotes) +
         p9.aes(x="Aprobado") +
@@ -156,13 +125,13 @@ def simulador_global_electricity(cantidad_lotes):
         p9.aes(x=lotes.index, y="Placas defectuosas") +
         p9.geom_bar(stat="identity") +
         # p9.geom_point() +
-        p9.geom_smooth() +  # Añade esta línea para obtener una línea suavizada
+        p9.geom_smooth() +  # Se añade esta línea para obtener una línea suavizada
         p9.labs(title="Cantidad de placas defectuosas por lote", x="Lote", y="Cantidad de placas defectuosas") +
         p9.theme_538()
     )
 
-    print(grafico_aprobacion)
-    print(grafico_defectuosas)
+    grafico_aprobacion.show()
+    grafico_defectuosas.show()
     print("Cantidad de lotes aprobados: ", lotes["Aprobado"].value_counts()[True])
     print("Cantidad de lotes rechazados: ", lotes["Aprobado"].value_counts()[False])
     print("Proporción de lotes aprobados: ", lotes["Aprobado"].value_counts(normalize=True)[True])
