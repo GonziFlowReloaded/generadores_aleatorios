@@ -56,6 +56,7 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
         max_validacion -= 1
         if max_validacion == 0:
             print("No se pudo validar los números generados")
+            print("Continuando con la simulación")
             break
 
     #Se declaran variables
@@ -163,10 +164,9 @@ def simular_represa(dias = 10, nivel_del_lago = 10, seed=4443):
     
     print(f'El nivel de peligro de sequía se activó {contar_riesgo_sequia} veces')
     
-    
+    len(niveles_de_agua)
+
     #Grafikitos
-    print(len(niveles_de_agua))
-    print(len(list(range(1, dias+1))))
     df = pd.DataFrame({
         'Día': list(range(1, len(niveles_de_agua)+1)),
         'Nivel del lago': niveles_de_agua
@@ -187,6 +187,6 @@ dias = int(input("Ingrese el número de días que desea simular: "))
 
 nivel_del_lago = int(input("Ingrese el nivel del lago en metros: "))
 
-simular_represa(dias=dias, nivel_del_lago=nivel_del_lago, seed=12344)
+simular_represa(dias=dias, nivel_del_lago=nivel_del_lago, seed=1423)
 
 

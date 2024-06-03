@@ -70,16 +70,16 @@ def simulador_lote(p, n, a, seed=12344):
             no_defectuosas += 1
         
     if defectuosas <= a:
-        print(f"El lote ha sido aprobado")
-        print(f"Placas defectuosas: {defectuosas}")
-        print(f"Placas no defectuosas: {no_defectuosas}")
-        print(f"Proporción de placas defectuosas: {(defectuosas/n)*100}%")
+        # print(f"El lote ha sido aprobado")
+        # print(f"Placas defectuosas: {defectuosas}")
+        # print(f"Placas no defectuosas: {no_defectuosas}")
+        # print(f"Proporción de placas defectuosas: {(defectuosas/n)*100}%")
         return True, defectuosas, no_defectuosas
     else:
-        print(f"El lote ha sido rechazado")
-        print(f"Placas defectuosas: {defectuosas}")
-        print(f"Placas no defectuosas: {no_defectuosas}")
-        print(f"Proporción de placas defectuosas: {(defectuosas/n)*100}%")
+        # print(f"El lote ha sido rechazado")
+        # print(f"Placas defectuosas: {defectuosas}")
+        # print(f"Placas no defectuosas: {no_defectuosas}")
+        # print(f"Proporción de placas defectuosas: {(defectuosas/n)*100}%")
         return False, defectuosas, no_defectuosas
 
 # global_electricity(p=0.23123123, n=100, a=20, seed=333)
