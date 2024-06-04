@@ -63,9 +63,46 @@ print(f"Tiempo medio total en el sistema: {mean_total_time:.2f} minutos")
 print(f"Número medio de clientes en cola de degustación: {mean_queue_length1:.2f}")
 print(f"Número medio de clientes en cola de encuestas: {mean_queue_length2:.2f}")
 
-# Graficar resultados
-plt.hist(total_times, bins=30, alpha=0.75, color='blue', edgecolor='black')
-plt.title('Distribución de los tiempos totales en el sistema')
+"""
+•	Graficar los resultados y analizar el impacto de los parámetros del sistema (tasas de llegada, tasas de servicio, número de servidores) en el desempeño.
+"""
+# Graficar histogramas
+plt.figure(figsize=(12, 4))
+plt.subplot(1, 3, 1)
+plt.hist(waiting_times1, bins=30, color='skyblue', edgecolor='black')
+plt.title('Histograma de tiempos de espera en cola de degustación')
+plt.xlabel('Tiempo de espera (minutos)')
+plt.ylabel('Frecuencia')
+
+plt.subplot(1, 3, 2)
+plt.hist(waiting_times2, bins=30, color='salmon', edgecolor='black')
+plt.title('Histograma de tiempos de espera en cola de encuestas')
+plt.xlabel('Tiempo de espera (minutos)')
+plt.ylabel('Frecuencia')
+
+plt.subplot(1, 3, 3)
+plt.hist(total_times, bins=30, color='lightgreen', edgecolor='black')
+plt.title('Histograma de tiempos totales en el sistema')
 plt.xlabel('Tiempo total (minutos)')
 plt.ylabel('Frecuencia')
+
+#Graficos de lineas
+plt.figure(figsize=(12, 4))
+plt.subplot(1, 2, 1)
+plt.plot(np.arange(num_customers), np.cumsum(waiting_times1), label='Cola de degustación')
+plt.plot(np.arange(num_customers), np.cumsum(waiting_times2), label='Cola de encuestas')
+plt.xlabel('Número de cliente')
+plt.ylabel('Tiempo acumulado de espera')
+plt.title('Tiempo acumulado de espera por cliente')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(np.arange(num_customers), np.cumsum(total_times))
+plt.xlabel('Número de cliente')
+plt.ylabel('Tiempo acumulado total')
+plt.title('Tiempo acumulado total por cliente')
+
+
+
+plt.tight_layout()
 plt.show()
