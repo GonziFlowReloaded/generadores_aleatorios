@@ -9,8 +9,6 @@ def simulate_queue(lambda_arrival, mu_service1, mu_service2, c1, c2, num_custome
     start_service2_times = np.zeros(num_customers)
     end_service2_times = np.zeros(num_customers)
 
-    queue1 = []
-    queue2 = []
     service1_end_time = np.zeros(c1)
     service2_end_time = np.zeros(c2)
     
@@ -37,7 +35,7 @@ def simulate_queue(lambda_arrival, mu_service1, mu_service2, c1, c2, num_custome
     waiting_times2 = start_service2_times - end_service1_times
     total_times = end_service2_times - arrival_times
 
-    return waiting_times1, waiting_times2, total_times
+    return waiting_times1, waiting_times2, total_times, arrival_times, start_service1_times, end_service1_times, start_service2_times, end_service2_times
 
 # Parámetros del sistema
 lambda_arrival = 1 / 3  # Tasa de llegada (clientes por minuto)
@@ -48,7 +46,7 @@ c2 = 3                # Número de estaciones de encuestas
 num_customers = 1000  # Número de clientes a simular
 
 # Ejecutar la simulación
-waiting_times1, waiting_times2, total_times = simulate_queue(lambda_arrival, mu_service1, mu_service2, c1, c2, num_customers)
+waiting_times1, waiting_times2, total_times, arrival_times, start_service1_times, end_service1_times, start_service2_times, end_service2_times = simulate_queue(lambda_arrival, mu_service1, mu_service2, c1, c2, num_customers)
 
 # Calcular estadísticas
 mean_waiting_time1 = np.mean(waiting_times1)
@@ -63,9 +61,6 @@ print(f"Tiempo medio total en el sistema: {mean_total_time:.2f} minutos")
 print(f"Número medio de clientes en cola de degustación: {mean_queue_length1:.2f}")
 print(f"Número medio de clientes en cola de encuestas: {mean_queue_length2:.2f}")
 
-"""
-•	Graficar los resultados y analizar el impacto de los parámetros del sistema (tasas de llegada, tasas de servicio, número de servidores) en el desempeño.
-"""
 # Graficar histogramas
 plt.figure(figsize=(12, 4))
 plt.subplot(1, 3, 1)
@@ -102,7 +97,32 @@ plt.xlabel('Número de cliente')
 plt.ylabel('Tiempo acumulado total')
 plt.title('Tiempo acumulado total por cliente')
 
-
-
 plt.tight_layout()
 plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_clients_in_system(arrival_times, start_service1_times, end_service1_times, start_service2_times, end_service2_times):
+    times = np.sort(np.concatenate((arrival_times, end_service1_times, end_service2_times)))
+    clients_in_system = []
+
+    for t in times:
+        in_system = np.sum((arrival_times <= t) & (end_service2_times > t))
+        clients_in_system.append(in_system)
+    
+    # Suavizado con un promedio móvil
+    window_size = 50  # Ajusta este valor según sea necesario
+    clients_in_system_smooth = np.convolve(clients_in_system, np.ones(window_size)/window_size, mode='valid')
+    times_smooth = times[:len(clients_in_system_smooth)]
+    
+    plt.figure(figsize=(12, 6))
+    plt.plot(times_smooth, clients_in_system_smooth, label='Clientes en el sistema (suavizado)')
+    plt.xlabel('Tiempo (minutos)')
+    plt.ylabel('Número de clientes en el sistema')
+    plt.title('Cantidad de clientes en el sistema en función del tiempo')
+    plt.legend()
+    plt.show()
+
+# Ejecutar gráfico de la cantidad de clientes en el sistema en función del tiempo
+plot_clients_in_system(arrival_times, start_service1_times, end_service1_times, start_service2_times, end_service2_times)
